@@ -8,3 +8,11 @@ isp:
   
 left:
   ip  192.168.100.254/24
+
+firewall-cmd
+
+  --add-forward-port=port=2222:proto=tcp:toport=22:toaddr=192.168.100.100
+  --add-forward-port=port=53:proto=udp:toport=53:toaddr=192.168.100.200
+  --add-forward-port=port=80:proto=tcp:toport=80:toaddr=192.168.100.100
+  --add-port=12345/udp
+  --runtime-to-permanent
