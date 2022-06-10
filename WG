@@ -1,11 +1,11 @@
 RTR-L:
   
-  mkdir /etc/wireguard/keys
-	cd /etc/wireguard/keys
-	wg genkey | tee serv-priv.key | wg pubkey > serv-pub.key
-	wg genkey | tee cli-priv.key | wg pubkey > cli-pub.key
-	cat serv-priv.key cli-pub.key >> /etc/wireguard/wg0.conf
-	vim /etc/wireguard/wg0.conf
+mkdir /etc/wireguard/keys
+cd /etc/wireguard/keys
+wg genkey | tee serv-priv.key | wg pubkey > serv-pub.key
+wg genkey | tee cli-priv.key | wg pubkey > cli-pub.key
+cat serv-priv.key cli-pub.key >> /etc/wireguard/wg0.conf
+vim /etc/wireguard/wg0.conf
 
       [Interface]
       Address = 10.20.30.1/30
@@ -16,22 +16,24 @@ RTR-L:
       PublicKey = <Client_Public_Key>
       AllowedIPs = 10.20.30.0/30, 172.16.100.0/24
 
-	systemctl enable --now wg-quick@wg0
-	service wg-quick@wg0 status
-	wg show wg0
+systemctl enable --now wg-quick@wg0
+service wg-quick@wg0 status
+wg show wg0
 
 RTR-R:
 
-  mkdir /etc/wireguard/keys
-	cd /etc/wireguard/keys
+mkdir /etc/wireguard/keys
+cd /etc/wireguard/keys
 
 RTR-L:
-	cd /etc/wireguard/keys
-	scp serv-pub.key cli-priv.key 5.5.5.100:/etc/wireguard/keys
+
+cd /etc/wireguard/keys
+scp serv-pub.key cli-priv.key 5.5.5.100:/etc/wireguard/keys
 
 RTR-R:
-	cat cli-priv.key serv-pub.key >> /etc/wireguard/wg0.conf
-	vim /etc/wireguard/wg0.conf
+
+cat cli-priv.key serv-pub.key >> /etc/wireguard/wg0.conf
+vim /etc/wireguard/wg0.conf
 
       [Interface]
       Address = 10.20.30.2/30
@@ -42,3 +44,7 @@ RTR-R:
       Endpoint = 4.4.4.100:12345
       PersistentKeepalive = 10
       AllowedIPs = 10.20.30.0/30, 192.168.100.0/24
+
+systemctl enable --now wg-quick@wg0
+service wg-quick@wg0 status
+wg show wg0
