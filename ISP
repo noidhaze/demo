@@ -1,3 +1,5 @@
+apt install vim network-manager bind9 dnsutils bind9utils
+
 vim /etc/ssh/sshd_config
 vim /etc/sysctl.conf
 
