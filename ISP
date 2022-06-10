@@ -1,1 +1,12 @@
+vim /etc/ssh/sshd_config
+vim /etc/sysctl.conf
 
+left:
+  ip  4.4.4.1/24
+  
+cent:
+  ip  3.3.3.1/24
+  dns 3.3.3.1
+  
+right:
+  ip  5.5.5.1/24
