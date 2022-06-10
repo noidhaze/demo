@@ -1,0 +1,31 @@
+3)FIREWALL
+	BD-1.
+
+	apt install firewalld
+	systemctl status firewalld
+
+	firewall-cmd --zone=public --remove-interface=ensXXX
+  
+	firewall-cmd --zone=external --add-interface=ensXXX
+	firewall-cmd --zone=trusted --add-interface=ensXXX
+
+	firewall-cmd --zone=external --add-service={http,https,dns}
+
+	firewall-cmd --zone=external --list-all
+
+	RTR-L
+	firewall-cmd --zone=external --add-forward-port=port=2222:proto=tcp:toport=22:toaddr=192.168.100.100
+	firewall-cmd --zone=external --add-forward-port=port=53:proto=udp:toport=53:toaddr=192.168.100.200
+	firewall-cmd --zone=external --add-forward-port=port=80:proto=tcp:toport=80:toaddr=192.168.100.100
+
+		RTR-R
+	firewall-cmd --zone=external --add-forward-port=port=2244:proto=tcp:toport=22:toaddr=172.16.100.100
+	firewall-cmd --zone=external --add-forward-port=port=80:proto=tcp:toport=80:toaddr=172.16.100.100
+
+	На RTR-R и RTR-L
+	firewall-cmd --zone=external --add-port=12345/udp - WireGuard
+
+	firewall-cmd --runtime-to-permanent
+	firewall-cmd --reload
+
+	firewall-cmd --zone=external --list-all
