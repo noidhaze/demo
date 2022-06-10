@@ -1,0 +1,54 @@
+vim /etc/bind/named.conf.options
+
+  options {
+		  directory "/var/cache/bind";
+		  listen-on { any; };
+
+		  recursion no;
+		  allow-query { any; };
+
+	  	dnssec-validation no;
+	  	listen-on-v6 { none; };
+  };
+
+vim /etc/bind/named.conf.local
+
+  zone "demo.wsr" {
+	  	type master;
+	  	allow-transfer { 4.4.4.100; };
+		  file "/opt/dns/demo.wsr.zone";
+  };
+
+	mkdir /opt/dns
+	cp /etc/bind/db.local /opt/dns/demo.wsr.zone
+	chmod 665 /opt/dns/demo.wsr.zone
+	vim /etc/apparmor.d/usr.sbin.named
+	  Видим всякие шаблоны по типу "/etc/bind/** r," и добавляем строчку "/opt/dns/** rw,"
+    
+	service apparmor restart
+	vim /opt/dns/demo.wsr.zone
+
+$TTL    604800
+@       IN      SOA     demo.wsr. root.demo.wsr.  //заменяем localhost на demo.wsr
+                              3         ; Serial // +1
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+
+@       IN      NS      demo.wsr.    //меняем localhost на demo.wsr
+@       IN      A       3.3.3.1		 //меняем 127.0.0.1 на 3.3.3.1
+
+isp				A		3.3.3.1
+www				A		4.4.4.100
+www				A		5.5.5.100
+internet		CNAME	isp
+
+service named restart
+service named status - должен быть зелененький
+journalctl -xe или cat /var/log/syslog
+
+host (или nslookup) <hostname>.demo.wsr - делаем DNS-запрос
+
+	Если ответа нет, то проверьте настройки DNS-сервера на интерфейсе с адресом 3.3.3.1
